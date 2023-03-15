@@ -1,0 +1,11 @@
+{
+    "default_cogs": [
+        "cogs.error",
+        "cogs.core",
+        "cogs.owner"
+    ],
+
+    "owners": [
+        610873262968406020
+    ]
+}
