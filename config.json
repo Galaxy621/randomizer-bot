@@ -3,7 +3,8 @@
         "cogs.error",
         "cogs.core",
         "cogs.owner",
-        "cogs.fun"
+        "cogs.fun",
+        "cogs.moderation"
     ],
 
     "owners": [

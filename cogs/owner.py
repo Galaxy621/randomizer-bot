@@ -2,6 +2,7 @@ import contextlib
 import discord
 import io
 import os
+import subprocess
 
 from discord import app_commands
 from discord.ext import commands
@@ -64,19 +65,19 @@ class OwnerCog(commands.Cog):
         embed = discord.Embed(title="Eval", description=f"```py\n{code}\n```")
         
         result = ""
-        stdout = ""
+        output = ""
 
         try:
             with contextlib.redirect_stdout(io.StringIO()) as stdout:
                 result = eval(code)
-                stdout = stdout.getvalue()
+                output = stdout.getvalue()
 
         except Exception as e:
             embed.add_field(name="Error", value=f"```py\n{e}\n```")
             
         finally:
-            if stdout:
-                embed.add_field(name="Output", value=f"```py\n{stdout}\n```")
+            if output:
+                embed.add_field(name="Output", value=f"```py\n{output}\n```")
             if result:
                 embed.add_field(name="Result", value=f"```py\n{result}\n```")
 
@@ -89,24 +90,49 @@ class OwnerCog(commands.Cog):
         embed = discord.Embed(title="Exec", description=f"```py\n{code}\n```")
         
         result = ""
-        stdout = ""
+        output = ""
 
         try:
             with contextlib.redirect_stdout(io.StringIO()) as stdout:
                 result = exec(code)
-                stdout = stdout.getvalue()
+                output = stdout.getvalue()
 
         except Exception as e:
             embed.add_field(name="Error", value=f"```py\n{e}\n```")
             
         finally:
-            if stdout:
-                embed.add_field(name="Output", value=f"```py\n{stdout}\n```")
+            if output:
+                embed.add_field(name="Output", value=f"```py\n{output}\n```")
             if result:
                 embed.add_field(name="Result", value=f"```py\n{result}\n```")
 
         await interaction.response.send_message(embed=embed)
 
+    @app_commands.command(name="shell", description="Executes a through the shell.")
+    @app_commands.describe(code = "The code to execute.")
+    @owner_only()
+    async def shell(self, interaction: discord.Interaction, code: str):
+        embed = discord.Embed(title="Shell", description=f"```sh\n{code}\n```")
+        
+        result = ""
+        output = ""
+
+        try:
+            with contextlib.redirect_stdout(io.StringIO()) as stdout:
+                result = subprocess.check_output(code, shell=True).decode()
+                output = stdout.getvalue()
+
+        except Exception as e:
+            embed.add_field(name="Error", value=f"```py\n{e}\n```")
+            
+        finally:
+            if output:
+                embed.add_field(name="Output", value=f"```\n{output}\n```")
+            if result:
+                embed.add_field(name="Result", value=f"```\n{result}\n```")
+
+        await interaction.response.send_message(embed=embed)
+    
 
     @staticmethod
     def get_code_block(content: str) -> str:
@@ -132,19 +158,19 @@ class OwnerCog(commands.Cog):
         embed = discord.Embed(title="Read Program", description=f"```py\n{code}\n```")
         
         result = ""
-        stdout = ""
+        output = ""
 
         try:
             with contextlib.redirect_stdout(io.StringIO()) as stdout:
                 result = exec(code)
-                stdout = stdout.getvalue()
+                output = stdout.getvalue()
 
         except Exception as e:
             embed.add_field(name="Error", value=f"```py\n{e}\n```")
             
         finally:
-            if stdout:
-                embed.add_field(name="Output", value=f"```py\n{stdout}\n```")
+            if output:
+                embed.add_field(name="Output", value=f"```py\n{output}\n```")
             if result:
                 embed.add_field(name="Result", value=f"```py\n{result}\n```")
 

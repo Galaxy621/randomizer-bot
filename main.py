@@ -1,6 +1,7 @@
 import asyncio
 import discord
 import json
+import openai
 import os
 
 from collections.abc import Iterable
@@ -35,9 +36,10 @@ class Bot(commands.Bot):
 
 async def main():
     load_dotenv("private.env")
+    openai.api_key = os.getenv("OPENAI_TOKEN")
     bot = Bot(command_prefix="!")
     
     async with bot:
-        await bot.start(os.getenv("TOKEN"))
+        await bot.start(os.getenv("BOT_TOKEN"))
 
 asyncio.run(main())
