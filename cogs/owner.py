@@ -14,6 +14,15 @@ def owner_only():
 class OwnerCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.ctx_menu = app_commands.ContextMenu(
+            name = "Interpret as Python",
+            callback=self.read_program
+        )
+        self.bot.tree.add_command(self.ctx_menu)
+
+    async def cog_unload(self) -> None:
+        self.bot.tree.remove_command(self.ctx_menu.name, self.ctx_menu.type)
+        return await super().cog_unload()
 
     @app_commands.command(name="load", description="Loads a cog.")
     @app_commands.describe(cog = "The cog to load.")
@@ -49,6 +58,7 @@ class OwnerCog(commands.Cog):
             await interaction.response.send_message(f"Reloaded {cog}.")
 
     @app_commands.command(name="eval", description="Evaluates code.")
+    @app_commands.describe(code = "The code to evaluate.")
     @owner_only()
     async def eval_command(self, interaction: discord.Interaction, code: str):
         embed = discord.Embed(title="Eval", description=f"```py\n{code}\n```")
@@ -73,9 +83,53 @@ class OwnerCog(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="exec", description="Executes code.")
+    @app_commands.describe(code = "The code to execute.")
     @owner_only()
     async def exec_command(self, interaction: discord.Interaction, code: str):
         embed = discord.Embed(title="Exec", description=f"```py\n{code}\n```")
+        
+        result = ""
+        stdout = ""
+
+        try:
+            with contextlib.redirect_stdout(io.StringIO()) as stdout:
+                result = exec(code)
+                stdout = stdout.getvalue()
+
+        except Exception as e:
+            embed.add_field(name="Error", value=f"```py\n{e}\n```")
+            
+        finally:
+            if stdout:
+                embed.add_field(name="Output", value=f"```py\n{stdout}\n```")
+            if result:
+                embed.add_field(name="Result", value=f"```py\n{result}\n```")
+
+        await interaction.response.send_message(embed=embed)
+
+
+    @staticmethod
+    def get_code_block(content: str) -> str:
+        # find the first instance of '```' and the next instance of '```'
+
+        first = content.find("```")
+        if first == -1:
+            # No code block, interpret message as code
+            return content
+        first += 3
+
+        second = content.find("```", first)
+        if content[first:second].startswith("py"):
+            # Remove 'py' from the start of the code block, if it exists
+            first += 3
+        
+        return content[first:second]
+
+
+    @owner_only()
+    async def read_program(self, interaction: discord.Interaction, message: discord.Message):
+        code = self.get_code_block(message.content)
+        embed = discord.Embed(title="Read Program", description=f"```py\n{code}\n```")
         
         result = ""
         stdout = ""
@@ -108,6 +162,7 @@ class OwnerCog(commands.Cog):
         await interaction.response.defer()
         await self.bot.tree.sync()
         await interaction.followup.send("Synced.")
+
 
 
 async def setup(bot):

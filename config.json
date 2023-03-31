@@ -2,7 +2,8 @@
     "default_cogs": [
         "cogs.error",
         "cogs.core",
-        "cogs.owner"
+        "cogs.owner",
+        "cogs.fun"
     ],
 
     "owners": [
