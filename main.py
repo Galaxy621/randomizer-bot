@@ -22,6 +22,7 @@ class Bot(commands.Bot):
     ):
         self.to_add = extensions
         self.owners = config["owners"]
+        self.colours = config["colours"]
         super().__init__(command_prefix, intents=intents, **options)
 
     async def setup_hook(self) -> None:

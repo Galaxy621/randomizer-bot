@@ -9,5 +9,10 @@
 
     "owners": [
         610873262968406020
-    ]
+    ],
+
+    "colours": {
+        "positive": "0ADD08",
+        "negative": "AB0010"
+    }
 }
