@@ -22,6 +22,11 @@ class FunCog(commands.Cog):
 
         self.names = {v: k for k, v in self.colours.items()}
 
+    @app_commands.command(name="ping")
+    @app_commands.checks.cooldown(1, 5)
+    async def ping(self, interaction: discord.Interaction):
+        await interaction.response.send_message("Pong!")
+
     @app_commands.command(name="mods", description="Umm... mods?")
     @app_commands.checks.cooldown(1, 5)
     async def ping(self, interaction: discord.Interaction):
