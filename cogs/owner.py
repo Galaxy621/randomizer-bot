@@ -180,6 +180,18 @@ class OwnerCog(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
+    @app_commands.command(name="createthread", description="Creates a thread.")
+    @app_commands.describe(name = "The name of the thread.", message = "The message to start the thread with.")
+    @owner_only()
+    async def create_thread(self, interaction: discord.Interaction, name: str, message: str):
+        await interaction.response.defer()
+        thread = await interaction.channel.create_thread(
+            name = name,
+            type = discord.ChannelType.public_thread
+        )
+        await thread.send(message)
+        await interaction.followup.send("Created thread.")
+
     @app_commands.command(name="shutdown", description="Shuts down the bot.")
     @owner_only()
     async def shutdown(self, interaction: discord.Interaction):
