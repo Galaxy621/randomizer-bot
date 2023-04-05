@@ -139,8 +139,13 @@ class CoreCog(commands.Cog):
             itemlist = "\n".join([i["Name"] for i in self.bot.items])
             embed = discord.Embed(
                 title = "Info",
-                description = f"```\n{itemlist}```",
+                description = "Get information on a specific item",
                 colour = discord.Colour.blurple()
+            )
+
+            embed.add_field(
+                name = "Items",
+                value = f"```\n{itemlist}```"
             )
 
             await interaction.followup.send(embed=embed)

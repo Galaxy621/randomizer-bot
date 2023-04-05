@@ -206,16 +206,20 @@ class OwnerCog(commands.Cog):
         await interaction.followup.send("Synced.")
 
     @app_commands.command(name="additem", description="Adds an item to the info command.")
-    @app_commands.describe(name = "The name of the item.", value = "The value of the item.")
+    @app_commands.describe(name = "The name of the item.", description = "The description of the item.")
     @owner_only()
-    async def add_item(self, interaction: discord.Interaction, name: str, value: str):
+    async def add_item(self, interaction: discord.Interaction, name: str, description: str):
         await interaction.response.defer()
         
-        if name in self.bot.items.keys():
-            await interaction.followup.send("Item already exists.")
-            return
-        
-        self.bot.items[name] = value
+        for item in self.bot.items:
+            if item["Name"].lower() == name.lower():
+                await interaction.followup.send("Item already exists.")
+                return
+
+        self.bot.items.append({
+            "Name": name,
+            "Description": description
+        })
         await interaction.followup.send("Added item.")
 
     @app_commands.command(name="removeitem", description="Removes an item from the info command.")
@@ -223,21 +227,28 @@ class OwnerCog(commands.Cog):
     @owner_only()
     async def remove_item(self, interaction: discord.Interaction, name: str):
         await interaction.response.defer()
-        
-        if name not in self.bot.items.keys():
-            await interaction.followup.send("Item does not exist.")
-            return
-        
-        del self.bot.items[name]
-        await interaction.followup.send("Removed item.")
+
+        for item in self.bot.items:
+            if item["Name"].lower() == name.lower():
+                self.bot.items.remove(item)
+                await interaction.followup.send("Removed item.")
+                return
+
+        await interaction.followup.send("Item not found.")
 
     @app_commands.command(name="saveitems", description="Saves the items to the file.")
     @owner_only()
     async def save_items(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        await self.bot.save_items()
+        self.bot.save_items()
         await interaction.followup.send("Saved items.")
 
+    @app_commands.command(name="syncitems", description="Syncs the items from the file.")
+    @owner_only()
+    async def sync_items(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        self.bot.sync_items()
+        await interaction.followup.send("Synced items.")
 
 async def setup(bot):
     await bot.add_cog(OwnerCog(bot))

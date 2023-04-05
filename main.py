@@ -29,12 +29,15 @@ class Bot(commands.Bot):
         self.to_add = extensions
         self.owners = config["owners"]
         self.colours = config["colours"]
-        self.items = iteminfo
+        self.items = iteminfo.copy()
         super().__init__(command_prefix, intents=intents, **options)
 
-    def save_items():
+    def save_items(self):
         with open("assets/iteminfo.json", "w") as f:
             json.dump(iteminfo, f, indent=4)
+
+    def sync_items(self):
+        self.items = iteminfo.copy()
 
     async def setup_hook(self) -> None:
         for extension in self.to_add:
