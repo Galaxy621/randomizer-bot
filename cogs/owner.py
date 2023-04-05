@@ -253,5 +253,13 @@ class OwnerCog(commands.Cog):
         self.bot.sync_items()
         await interaction.followup.send("Synced items.")
 
+    # load latest backup
+    @app_commands.command(name="loadbackup", description="Loads the latest backup.")
+    @owner_only()
+    async def load_backup(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        self.bot.load_latest_backup("..")
+        await interaction.followup.send("Loaded backup.")
+
 async def setup(bot):
     await bot.add_cog(OwnerCog(bot))

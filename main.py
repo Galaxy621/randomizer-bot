@@ -50,7 +50,21 @@ class Bot(commands.Bot):
     def backup_items(self, directory: str):
         file_timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         with open(f"{directory}/iteminfo-{file_timestamp}.json", "w") as f:
-            json.dump(iteminfo, f, indent=4)
+            json.dump(self.items, f, indent=4)
+
+    def load_latest_backup(self, directory: str):
+        backups = list(self.get_backups(directory))
+        if not backups:
+            raise FileNotFoundError("No backups found.")
+
+        backups.sort(reverse=True)
+        with open(f"{directory}/{backups[0]}") as f:
+            self.items = json.load(f)
+
+    def get_backups(self, directory: str):
+        for v in os.listdir(directory):
+            if v.startswith("iteminfo-") and v.endswith(".json"):
+                yield v
 
     async def setup_hook(self) -> None:
         for extension in self.to_add:
