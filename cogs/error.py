@@ -7,6 +7,10 @@ class ErrorCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+        self.nickname = "Error"
+        self.hidden = True
+        self.description = "Error handling"
+
     def cog_load(self):
         tree = self.bot.tree
         self._old_tree_error = tree.on_error

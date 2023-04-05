@@ -37,8 +37,12 @@ class Bot(commands.Bot):
 
 async def main():
     load_dotenv("private.env")
+
+    intents = discord.Intents.default()
+    intents.members = True
+
     openai.api_key = os.getenv("OPENAI_TOKEN")
-    bot = Bot(command_prefix="!")
+    bot = Bot(command_prefix="!", intents=intents)
     
     async with bot:
         await bot.start(os.getenv("BOT_TOKEN"))

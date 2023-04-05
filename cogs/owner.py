@@ -21,6 +21,10 @@ class OwnerCog(commands.Cog):
         )
         self.bot.tree.add_command(self.ctx_menu)
 
+        self.nickname = "Owner"
+        self.description = "Owner commands"
+        self.hidden = True
+
     async def cog_unload(self) -> None:
         self.bot.tree.remove_command(self.ctx_menu.name, self.ctx_menu.type)
         return await super().cog_unload()

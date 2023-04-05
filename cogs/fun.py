@@ -10,6 +10,9 @@ class FunCog(commands.Cog):
         self.bot = bot
         self.colours = {}
 
+        self.nickname = "Fun"
+        self.description = "Fun commands"
+
         with open("assets/rgb.txt", "r") as f:
             lines = f.readlines()
 

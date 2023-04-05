@@ -13,7 +13,10 @@ class ModerationCog(commands.Cog):
                 callback=self.checkfilter
             )
         ]
-        
+
+        self.nickname = "Moderation"
+        self.description = "Moderation commands"
+
         for command in self.ctx_menu: self.bot.tree.add_command(command)
 
     async def cog_unload(self) -> None:
