@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import discord
 import json
 import openai
@@ -45,6 +46,11 @@ class Bot(commands.Bot):
 
     def sync_items(self):
         self.items = iteminfo.copy()
+
+    def backup_items(self, directory: str):
+        file_timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        with open(f"{directory}/iteminfo-{file_timestamp}.json", "w") as f:
+            json.dump(iteminfo, f, indent=4)
 
     async def setup_hook(self) -> None:
         for extension in self.to_add:

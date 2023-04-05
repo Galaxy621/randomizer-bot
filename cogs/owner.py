@@ -237,10 +237,13 @@ class OwnerCog(commands.Cog):
         await interaction.followup.send("Item not found.")
 
     @app_commands.command(name="saveitems", description="Saves the items to the file.")
+    @app_commands.describe(backup = "Whether to backup the file outside of the working directory before saving.")
     @owner_only()
-    async def save_items(self, interaction: discord.Interaction):
+    async def save_items(self, interaction: discord.Interaction, backup: bool = True):
         await interaction.response.defer()
         self.bot.save_items()
+        if backup:
+            self.bot.backup_items("..")
         await interaction.followup.send("Saved items.")
 
     @app_commands.command(name="syncitems", description="Syncs the items from the file.")
