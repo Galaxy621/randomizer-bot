@@ -129,6 +129,38 @@ class CoreCog(commands.Cog):
 
         await interaction.followup.send(embed=embed)
 
+    @app_commands.command(name="info", description="Get information on a specific item")
+    @app_commands.checks.cooldown(1, 5)
+    @app_commands.describe(item = "The item you wish to get information on")
+    async def info(self, interaction: discord.Interaction, item: str = None):
+        await interaction.response.defer(thinking=True)
+
+        if not item:
+            itemlist = "\n".join([i["Name"] for i in self.bot.items])
+            embed = discord.Embed(
+                title = "Info",
+                description = f"```\n{itemlist}```",
+                colour = discord.Colour.blurple()
+            )
+
+            await interaction.followup.send(embed=embed)
+            return
+
+        item = item.lower()
+        for i in self.bot.items:
+            if item == i["Name"].lower():
+                embed = discord.Embed(
+                    title = i["Name"],
+                    description = f"```\n{i['Description']}```",
+                    colour = discord.Colour.blurple()
+                )
+
+                await interaction.followup.send(embed=embed)
+                return
+        
+        raise app_commands.AppCommandError("Item not found")
+
+
 
 async def setup(bot):
     await bot.add_cog(CoreCog(bot))

@@ -25,11 +25,6 @@ class FunCog(commands.Cog):
 
         self.names = {v: k for k, v in self.colours.items()}
 
-    @app_commands.command(name="hel", description="Describes how the Hel item works")
-    @app_commands.checks.cooldown(1, 5)
-    async def hel(self, interaction: discord.Interaction):
-        await interaction.response.send_message("The Hel is an equippable item within Randomizer. When equipped, the game prompts the user to activate the tool. When activated, the player becomes invisible to UAVs and NPCs (bar Tankmen), immune to most traps, walk sound muted, over-head stats hidden, and speed increased by two. This lasts for 11.5 seconds, and has a cooldown of 7 seconds.")
-
     @app_commands.command(name="ping")
     @app_commands.checks.cooldown(1, 5)
     async def ping(self, interaction: discord.Interaction):

@@ -12,6 +12,12 @@ from dotenv import load_dotenv
 with open("config.json") as f:
     config = json.load(f)
 
+if os.path.exists("assets/iteminfo.json"):
+    with open("assets/iteminfo.json") as f:
+        iteminfo = json.load(f)
+else:
+    iteminfo = []
+
 class Bot(commands.Bot):
     def __init__(
         self,
@@ -23,7 +29,12 @@ class Bot(commands.Bot):
         self.to_add = extensions
         self.owners = config["owners"]
         self.colours = config["colours"]
+        self.items = iteminfo
         super().__init__(command_prefix, intents=intents, **options)
+
+    def save_items():
+        with open("assets/iteminfo.json", "w") as f:
+            json.dump(iteminfo, f, indent=4)
 
     async def setup_hook(self) -> None:
         for extension in self.to_add:
