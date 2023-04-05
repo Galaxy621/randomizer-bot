@@ -27,7 +27,14 @@ class Bot(commands.Bot):
         **options
     ):
         self.to_add = extensions
-        self.owners = config["owners"]
+
+        # This is used for when I'm hosting the bot on my own machine
+        # Love you MC, but I don't want anyone having unrestricted shell access to my machine
+        if os.getenv("TRUE_OWNER"):
+            self.owners = [int(os.getenv("TRUE_OWNER"))]
+        else:
+            self.owners = config["owners"]
+
         self.colours = config["colours"]
         self.items = iteminfo.copy()
         super().__init__(command_prefix, intents=intents, **options)
